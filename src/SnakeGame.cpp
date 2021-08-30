@@ -41,7 +41,6 @@ void SnakeGame::initialize_game(char* argv[]){
             levels.push_back(templ);
             maze.clear();
         }
-        
     }
     state = START_LEVEL;
 }

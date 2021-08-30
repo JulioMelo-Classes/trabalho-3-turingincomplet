@@ -1,10 +1,8 @@
 #pragma once
 #include <ctime>
+#include <iostream>
 
 #include "Player.h"
-
-
-#include <iostream>
 
 class Level{
 
