@@ -85,9 +85,9 @@ void SnakeGame::update(){
             state = RUNNING;
             break;
         case RUNNING:
-            if (frameCount > 0 && frameCount % 10 == 0) { //depois de 10 frames o jogo pergunta se o usuário quer continuar
-                state = WAITING_USER;
-            }
+            //if (frameCount > 0 && frameCount % 10 == 0) { //depois de 10 frames o jogo pergunta se o usuário quer continuar
+             //   state = WAITING_USER;
+            //}
             levelstate=levels[levelcount].update(snek,score);
             levels[levelcount].solve(AI);
             if (levelstate == 1) {
@@ -242,6 +242,6 @@ void SnakeGame::loop(){
         process_actions();
         update();
         render();
-        wait(1000);// espera 1 segundo entre cada frame
+        wait(100);// espera 1 segundo entre cada frame
     }
 }
