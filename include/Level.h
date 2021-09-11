@@ -13,6 +13,13 @@ class Level{
 	int foodn; //<! quantidade de comida restante a ser gerada
 	pos foodpos; //<! posição da comida no mapa
 	int scorecount; //<! contador para o cálculo do score
+	bool random; //<! indica se o level é aleatório
+	std::vector<pos> valid_pos_vec; //<! posições validas para início aleatório
+
+	/**
+	 * @brief acha posições validas para início aleatório
+	*/
+	void findpos();
 
 public:
 	/**
@@ -20,7 +27,7 @@ public:
 	 * @param mazein labirinto para gerar os atributos do level
 	 * @param food comida inicial
 	*/
-	Level(const mapa& mazein, int food);
+	Level(const mapa& mazein, int food,bool randomflag);
 
 	/**
 	 * @brief retorna a posição inicial do level
@@ -57,7 +64,7 @@ public:
 	/**
 	 * @brief atualiza o level a cobra e o score
 	 * @param snek cobra a ser recebida
-	 * @param score score a ser recebida
+	 * @param score score a ser recebido
 	 * @return o estado do level
 	*/
 	int update(Snake& snek, int& score);
@@ -81,5 +88,10 @@ public:
 	 * @param levelcount contador para saber o level atual
 	*/
 	void drawUI(int lives,int score, int totallevels, int levelcount);
+
+	/**
+	 * @brief sorteia a posição inicial da cobra
+	*/
+	void shufflepos();
 };
 

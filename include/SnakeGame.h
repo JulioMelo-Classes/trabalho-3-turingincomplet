@@ -32,17 +32,20 @@ class SnakeGame{
         std::vector<Level> levels; //<! todos os levels carregados no jogo
         Snake snek; //<! a cobra
         Player AI; //<! a inteligencia artificial que controla a cobra
-        int levelstate; //<! 1 se o a cobra colidiu, 2 se a cobra venceu o level ou 0 caso contrário
+        int levelstate; //<! 1 se o a cobra colidiu, 2 se a cobra comeu uma comida, 3 se a cobra venceu o level ou 0 caso contrário
         int levelcount; //<! contador para o level atual
         int score; //<! pontuação do jogo
         std::string next_level_message; //<! parte da mensagem a ser exibida quando a cobra passa para o próximo level
+        bool loopflag; //<! indica se a flag de loop foi setada
+        bool randomflag;//<! indica se a flag de random start foi setada
 
     public:
         /**
-         * @brief contrutor, recebe os comandos dados no terminal
-         * @param argv comandos do terminal
+         * @brief contrutor, recebe os argumentos dados no terminal
+         * @param argc argumentos dados no terminal
+         * @param argv quantidade de argumentos dados no terminal
         */
-        SnakeGame(char* argv[]);
+        SnakeGame(int argc, char* argv[]);
 
         /**
         * @brief chamado no main, este loop executa o jogo indefinidamente até que o usuário escolha terminar!
@@ -75,6 +78,13 @@ class SnakeGame{
         * @brief é chamada quando o jogo termina a fim de destruir/resetar elementos do estado do jogo
         **/
         void game_over();
+
+        /**
+         * @brief  processa o resto dos argumentos do terminal
+         * @param argc argumentos do terminal
+         * @param argv quantidade de argumentos do terminal
+        */
+        void process_commands(int argc, char* argv[]);
 };
 
 #endif //SnakeGame_h

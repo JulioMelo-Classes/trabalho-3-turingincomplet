@@ -9,12 +9,13 @@
 
 using namespace std;
 
-SnakeGame::SnakeGame(char* argv[]){
+SnakeGame::SnakeGame(int argc, char* argv[]){
     choice = "";
     frameCount = 0;
     levelstate = 0;
     score = 0;
     srand((unsigned int)time(0));
+    process_commands(argc, argv);
     initialize_game(argv);
 }
 
@@ -22,6 +23,7 @@ void SnakeGame::initialize_game(char* argv[]){
     //carrega o nivel ou os níveis
     ifstream levelFile(argv[1]);
     snek.setmode(argv[2]);
+    AI.setmode(argv[2]);
     levelcount = 0;
     int linecount;
     int levelfood;
@@ -37,7 +39,7 @@ void SnakeGame::initialize_game(char* argv[]){
                 getline(levelFile, line);
                 maze.push_back(line);
             }
-            Level templ(maze, levelfood);
+            Level templ(maze, levelfood,randomflag);
             levels.push_back(templ);
             maze.clear();
         }
@@ -80,16 +82,15 @@ void SnakeGame::update(){
     //atualiza o estado do jogo de acordo com o resultado da chamada de "process_input"
     switch(state){
         case START_LEVEL: //o jogo inicia o level
+            levels[levelcount].shufflepos();
+            levels[levelcount].generatefood();
             snek.setpos(levels[levelcount].getinitpos());
+            AI.setpos(levels[levelcount].getinitpos());
             levels[levelcount].solve(AI);
             state = RUNNING;
             break;
         case RUNNING:
-            if (frameCount > 0 && frameCount % 10 == 0) { //depois de 10 frames o jogo pergunta se o usuário quer continuar
-                state = WAITING_USER;
-            }
             levelstate=levels[levelcount].update(snek,score);
-            levels[levelcount].solve(AI);
             if (levelstate == 1) {
                 state = COLLIDE;
                 if (snek.die()) {
@@ -100,6 +101,9 @@ void SnakeGame::update(){
                 AI.reset();
             }
             if (levelstate == 2) {
+                levels[levelcount].solve(AI);
+            }
+            if (levelstate == 3) {
                 state = END_LEVEL;
             }
             break;
@@ -159,7 +163,9 @@ void SnakeGame::update(){
             }
             else {
                 levelcount = 0;
-                score = 0;
+                if (!loopflag) {
+                    score = 0;
+                }
                 state = START_LEVEL;
             }
             break;
@@ -236,7 +242,20 @@ void SnakeGame::render(){
 
 void SnakeGame::game_over(){
 }
-
+void SnakeGame::process_commands(int argc, char* argv[]) {
+    loopflag = false;
+    randomflag = false;
+    string command;
+    for (int ii = 3; ii < argc; ii++) {
+        command = argv[ii];
+        if (command == "-loop") {
+            loopflag = true;
+        }
+        else if (command == "-random") {
+            randomflag = true;
+        }
+    }
+}
 void SnakeGame::loop(){
     while(state != GAME_OVER){
         process_actions();

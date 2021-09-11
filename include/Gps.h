@@ -41,7 +41,7 @@ public:
 	pos getpos();
 
 	/**
-	 * @brief atualiza para a posição para a posição desejada
+	 * @brief atualiza para a posição desejada
 	 * @param p posição, como esquerda, direita,frente ou trás
 	*/
 	void updatepos( int p);

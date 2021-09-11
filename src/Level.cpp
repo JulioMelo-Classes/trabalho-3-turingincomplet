@@ -1,10 +1,12 @@
 ﻿#include "Level.h"
 
 using namespace std;
-Level::Level(const mapa& mazein, int food) {
+Level::Level(const mapa& mazein, int food, bool randomflag) {
 	this->map = mazein;
-	for (size_t ii = 0; ii < map.size(); ii++) {
-		for (size_t jj = 0; jj < map[ii].size(); jj++) {
+	l = map.size();
+	c = map[0].size();
+	for (int ii = 0; ii < l; ii++) {
+		for (int jj = 0; jj < c; jj++) {
 			if (map[ii][jj] == '*') {
 				map[ii][jj] = ' ';
 				initpos.y = ii;
@@ -12,12 +14,13 @@ Level::Level(const mapa& mazein, int food) {
 			}
 		}
 	}
-	l = map.size();
-	c = map[0].size();
+	random = randomflag;
+	if (random) {
+		findpos();
+	}
 	initfood = food;
 	foodn = initfood;
 	foodpos = { -1,-1 };
-	generatefood();
 	scorecount = 1;
 }
 
@@ -46,7 +49,9 @@ void Level::draw(Snake& snek, int score, int totallevels, int levelcount){
 	}
 }
 void Level::solve(Player& AI) {
-	AI.find_solution(map, initpos);
+	mapa solvemap = map;
+	solvemap[foodpos.y][foodpos.x] = '@';
+	AI.find_solution(solvemap);
 }
 void Level::generatefood() {
 	foodn--;
@@ -84,10 +89,11 @@ int Level::update(Snake& snek, int& score) {
 		computescore(score);
 		scorecount = 1;
 		if (foodn == 0) {
-			return 2;
+			return 3;
 		}
 		snek.grow();
 		generatefood(snek);
+		return 2;
 	}
 	if (map[cpos.y][cpos.x] != ' ' && map[cpos.y][cpos.x] != '@') {
 		scorecount = 1;
@@ -102,7 +108,6 @@ int Level::update(Snake& snek, int& score) {
 }
 void Level::reset() {
 	foodn = initfood;
-	generatefood();
 }
 void Level::computescore(int& cscore) {
 	cscore += 5000 / scorecount;
@@ -112,3 +117,24 @@ void Level::drawUI(int lives, int score, int totallevels, int levelcount) {
 	cout << "Level: " <<levelcount+1<< " of " <<totallevels << " | " << " Lives: " << lives << " | " << "Score: " << score << " | " << "Food eaten: " << initfood - foodn-1 << " of " << initfood << endl;
 	cout << "_________________________________________________________________________________" << endl;
 }
+void Level::shufflepos() {
+	if (random) {
+		initpos = valid_pos_vec[rand() % valid_pos_vec.size()];
+	}
+}
+void Level::findpos() {
+	for (int ii = 0; ii < l; ii++) {
+		for (int jj = 0; jj < c; jj++) {
+			if (map[ii][jj] == ' ') {
+				if (map[ii - 1][jj] == ' ') {
+					valid_pos_vec.push_back({ ii,jj });
+				}
+			}
+		}
+	}
+	if (valid_pos_vec.empty()) {
+		cout << "arquivo invalido para começo aleatório"<<endl;
+		exit(1);
+	}
+}
+	

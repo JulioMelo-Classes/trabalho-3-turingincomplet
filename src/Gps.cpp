@@ -11,7 +11,7 @@ Gps::Gps() {
 }
 
 pos Gps::getcords(int p) {
-	return compass[(d+p)%4];
+	return { cpos.y + compass[(d + p) % 4].y, cpos.x + compass[(d + p) % 4].x };
 }
 int Gps::getdirec() {
 	return d;
